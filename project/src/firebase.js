@@ -1,9 +1,10 @@
-// import firebase from "firebase";
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
-const firebaseApp = firebase.initializeApp({
+
+const firebaseApp = initializeApp({
     apiKey: "AIzaSyBDEggWn3hd-sSf_pm0Ps6NW92TxtIi9t0",
     authDomain: "instagram-7dfcc.firebaseapp.com",
     projectId: "instagram-7dfcc",
@@ -13,8 +14,8 @@ const firebaseApp = firebase.initializeApp({
     measurementId: "G-GPF82T5S1P"
 });
 
-const db = firebaseApp.firestore();
-const auth = firebase.auth();
-const storage = firebase.storate();
+const db = getFirestore(firebaseApp);
+const auth = getAuth(firebaseApp);
+const storage = getStorage(firebaseApp);
 
 export { db, auth, storage };
