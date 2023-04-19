@@ -62,14 +62,6 @@ function App() {
     }
   }, [user, username])
 
-  // useEffect(() => {
-  //   onSnapshot(collection(db, 'posts'), snapshot => {
-  //     setPosts(snapshot.docs.map(doc => ({
-  //       id: doc.id,
-  //       post: doc.data()
-  //     })));
-  //   });
-  // }, []);
   useEffect(() => {
     onSnapshot(
       query(collection(db, 'posts'), orderBy('timestamp', 'desc')), 
@@ -113,11 +105,6 @@ function App() {
       {/* Caption input */}
       {/* File Picker */}
       {/* Post Button */}
-      {user && user.displayName ? (
-        <Upload username={user.displayName}/>
-      ): (
-        <h3>Sorry, you must sign in to upload</h3>
-      )}
       <Modal
       open={open}
       onClose={() => setOpen(false)}
@@ -191,27 +178,33 @@ function App() {
           className = "app__headerImage"
           src = "instagramLogo.png"
           alt="Logo"></img>
+        {user ? (
+        <Button onClick={() => auth.signOut()}>Logout</Button>  
+        ): (
+          <div className='app__loginContainer'>
+            <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
+            <Button onClick={() => setOpen(true)}>Sign Up</Button>
+          </div>
+        )}
       </div>
 
-      {user ? (
-      <Button onClick={() => auth.signOut()}>Logout</Button>  
-      ): (
-        <div className='app__loginContainer'>
-          <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
-          <Button onClick={() => setOpen(true)}>Sign Up</Button>
-        </div>
-      )}
       {/* <h1>Hello Clever Programmers Let's build an Instagram Clone with React</h1> */}
       {
         posts.map(({id, post}) => (
           <Post key={id} username={post.username} caption={post.caption} imageUrl= {post.imageUrl}/>
         ))
       }
+      {user && user.displayName ? (
+        <Upload username={user.displayName}/>
+      ): (
+        <h3>Sorry, you must sign in to upload</h3>
+      )}
     
       {/* <Post username = "syang" caption="WoW it works"imageUrl = "https://malibu.sfo3.cdn.digitaloceanspaces.com/20220903-07_sl2_512/file_9976912_512x512.webp" />
       <Post username = "me" caption="dope"imageUrl = "https://malibu.sfo3.cdn.digitaloceanspaces.com/20220903-07_sl2_512/file_9976912_512x512.webp" /> */}
     </div>
   );
+  
 }
 
 export default App;
