@@ -3,7 +3,7 @@ import './App.css';
 import Post from './Post'
 import { db, auth } from './firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, signInWithEmailAndPassword } from 'firebase/auth';
 import { Button, Modal, Input } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
@@ -36,11 +36,30 @@ function App() {
   const [modalStyle] = useState(getModalStyle);
   const [posts, setPosts] = useState([]);
   const [open, setOpen] = useState(false);
+  const [openSignIn, setOpenSignIn] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [user, setUser] = useState(null)
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
+      if (authUser) {
+        // User Logged In
+        console.log(authUser);
+        setUser(authUser);
 
+      } else {
+        // User Logged Out
+        setUser(null);
+      }
+    })
+
+    return () => {
+      // perform clean up actions
+      unsubscribe();
+    }
+  }, [user, username])
 
   useEffect(() => {
     onSnapshot(collection(db, 'posts'), snapshot => {
@@ -54,24 +73,34 @@ function App() {
   const signUp = (event) => {
     event.preventDefault();
     createUserWithEmailAndPassword(auth, email, password)
+    .then((authUser) => {
+      return updateProfile(authUser.user, {
+        displayName: username,
+      })
+    })
     .catch((error) => {
       alert(error.message);
       // console.log(error.message);
     })
-    // .then((userCredential) => {
-    //   // Signed up
-    //   const user = userCredential.user;
-    //   console.log(user);
 
-    //   // Update user's display name
-    //   updateProfile(user, displayName);
-
-    //   // Create user document in Firestore
-    //   createUserData(user, displayName);
-    // });
+    setOpen(false);
+    
   }
+
+
+  const signIn = (event) => {
+    event.preventDefault();
+    signInWithEmailAndPassword(auth, email, password)
+    .catch((error) => alert(error.message))
+    setOpenSignIn(false)
+  }
+
   return (
     <div className="App">
+
+      {/* Caption input */}
+      {/* File Picker */}
+      {/* Post Button */}
       <Modal
       open={open}
       onClose={() => setOpen(false)}
@@ -108,6 +137,37 @@ function App() {
           
         </div>
       </Modal>
+
+      <Modal
+      open={openSignIn}
+      onClose={() => setOpenSignIn(false)}
+      >
+        <div style={modalStyle} className={classes.paper}>
+          <form className='app__signup'>
+            <center>
+              <img
+                className='app__headerImage'
+                src='instagramLogo.png'
+                alt=''
+              />
+            </center>
+            <Input
+              placeholder="email"
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              placeholder="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button onClick={signIn}>Sign In</Button>
+          </form>
+          
+        </div>
+      </Modal>
       {/* Header */}
       <div className = "app__header">
         <img 
@@ -115,7 +175,15 @@ function App() {
           src = "instagramLogo.png"
           alt="Logo"></img>
       </div>
-      <Button onClick={() => setOpen(true)}>Sign Up</Button>
+
+      {user ? (
+      <Button onClick={() => auth.signOut()}>Logout</Button>  
+      ): (
+        <div className='app__loginContainer'>
+          <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
+          <Button onClick={() => setOpen(true)}>Sign Up</Button>
+        </div>
+      )}
       <h1>Hello Clever Programmers Let's build an Instagram Clone with React</h1>
       {
         posts.map(({id, post}) => (
