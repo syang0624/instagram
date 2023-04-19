@@ -6,6 +6,7 @@ import { collection, onSnapshot } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, signInWithEmailAndPassword } from 'firebase/auth';
 import { Button, Modal, Input } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import Upload from './upload';
 
 
 function getModalStyle() {
@@ -101,6 +102,11 @@ function App() {
       {/* Caption input */}
       {/* File Picker */}
       {/* Post Button */}
+      {user && user.displayName ? (
+        <Upload username={user.displayName}/>
+      ): (
+        <h3>Sorry, you must sign in to upload</h3>
+      )}
       <Modal
       open={open}
       onClose={() => setOpen(false)}
@@ -184,7 +190,7 @@ function App() {
           <Button onClick={() => setOpen(true)}>Sign Up</Button>
         </div>
       )}
-      <h1>Hello Clever Programmers Let's build an Instagram Clone with React</h1>
+      {/* <h1>Hello Clever Programmers Let's build an Instagram Clone with React</h1> */}
       {
         posts.map(({id, post}) => (
           <Post key={id} username={post.username} caption={post.caption} imageUrl= {post.imageUrl}/>
