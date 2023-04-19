@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import Post from './Post'
 import { db, auth } from './firebase';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, signInWithEmailAndPassword } from 'firebase/auth';
 import { Button, Modal, Input } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -62,13 +62,24 @@ function App() {
     }
   }, [user, username])
 
+  // useEffect(() => {
+  //   onSnapshot(collection(db, 'posts'), snapshot => {
+  //     setPosts(snapshot.docs.map(doc => ({
+  //       id: doc.id,
+  //       post: doc.data()
+  //     })));
+  //   });
+  // }, []);
   useEffect(() => {
-    onSnapshot(collection(db, 'posts'), snapshot => {
-      setPosts(snapshot.docs.map(doc => ({
-        id: doc.id,
-        post: doc.data()
-      })));
-    });
+    onSnapshot(
+      query(collection(db, 'posts'), orderBy('timestamp', 'desc')), 
+      snapshot => {
+        setPosts(snapshot.docs.map(doc => ({
+          id: doc.id,
+          post: doc.data()
+        })));
+      }
+    );
   }, []);
 
   const signUp = (event) => {
