@@ -7,7 +7,8 @@ import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, updateProf
 import { Button, Modal, Input } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Upload from './upload';
-import InstagramEmbed from 'react-instagram-embed';
+// import InstagramEmbed from 'react-instagram-embed';
+// import InstagramEmbed from './embed';
 
 
 function getModalStyle() {
@@ -192,10 +193,26 @@ function App() {
       <div className='app__posts'>
         {
           posts.map(({id, post}) => (
-            <Post key={id} username={post.username} caption={post.caption} imageUrl= {post.imageUrl}/>
+            <Post key={id} postId = {id} user={user} username={post.username} caption={post.caption} imageUrl= {post.imageUrl}/>
           ))
         }
       </div>
+
+      {/* <InstagramEmbed
+        url='https://instagr.am/p/Zw9o4/'
+        clientAccessToken='123|456'
+        maxWidth={320}
+        hideCaption={false}
+        containerTagName='div'
+        protocol=''
+        injectScript
+        onLoading={() => {}}
+        onSuccess={() => {}}
+        onAfterRender={() => {}}
+        onFailure={() => {}}
+      /> */}
+      {/* <InstagramEmbed url="https://www.instagram.com/p/CnhVR_JDe3X/" /> */}
+
       {user && user.displayName ? (
         <Upload username={user.displayName}/>
       ): (
