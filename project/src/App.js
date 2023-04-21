@@ -7,6 +7,7 @@ import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, updateProf
 import { Button, Modal, Input } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Upload from './upload';
+import InstagramEmbed from 'react-instagram-embed';
 
 
 function getModalStyle() {
@@ -188,12 +189,13 @@ function App() {
         )}
       </div>
 
-      {/* <h1>Hello Clever Programmers Let's build an Instagram Clone with React</h1> */}
-      {
-        posts.map(({id, post}) => (
-          <Post key={id} username={post.username} caption={post.caption} imageUrl= {post.imageUrl}/>
-        ))
-      }
+      <div className='app__posts'>
+        {
+          posts.map(({id, post}) => (
+            <Post key={id} username={post.username} caption={post.caption} imageUrl= {post.imageUrl}/>
+          ))
+        }
+      </div>
       {user && user.displayName ? (
         <Upload username={user.displayName}/>
       ): (
