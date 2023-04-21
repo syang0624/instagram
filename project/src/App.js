@@ -190,6 +190,12 @@ function App() {
         )}
       </div>
 
+      {user && user.displayName ? (
+        <Upload username={user.displayName}/>
+      ): (
+        <h3>Sorry, you must sign in to post & comment</h3>
+      )}
+
       <div className='app__posts'>
         {
           posts.map(({id, post}) => (
@@ -213,11 +219,6 @@ function App() {
       /> */}
       {/* <InstagramEmbed url="https://www.instagram.com/p/CnhVR_JDe3X/" /> */}
 
-      {user && user.displayName ? (
-        <Upload username={user.displayName}/>
-      ): (
-        <h3>Sorry, you must sign in to upload</h3>
-      )}
     
       {/* <Post username = "syang" caption="WoW it works"imageUrl = "https://malibu.sfo3.cdn.digitaloceanspaces.com/20220903-07_sl2_512/file_9976912_512x512.webp" />
       <Post username = "me" caption="dope"imageUrl = "https://malibu.sfo3.cdn.digitaloceanspaces.com/20220903-07_sl2_512/file_9976912_512x512.webp" /> */}
